@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+
+<body class="h-screen bg-green-300">
+    <div class="grid grid-cols-1 md:grid-cols-3 justify-center gap-2 py-20">
+        <div class="col-span-1 col-start-2">
+            <div class="w-full h-auto rounded-3xl bg-gray-200 shadow-md shadow-gray-900 py-5 px-4">
+                <form id="paymentform" method="post">
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="col-span-1 mb-5">
+                            <label for="name" class="mb-4 block uppercase tracking-wider font-bold text-md">Enter
+                                Name</label>
+                            <input placeholder="Enter Name" type="text" name="firstname" id="name"
+                                class="w-full outline-none p-2 border border-gray-400 rounded-md" />
+                        </div>
+                        <div class="col-span-1 mb-5">
+                            <label for="email" class="mb-4 block uppercase tracking-wider font-bold text-md">Enter
+                                Email</label>
+                            <input placeholder="Enter email here" type="text" name="email" id="email"
+                                class="w-full outline-none p-2 border border-gray-400 rounded-md" />
+                        </div>
+                        <div class="col-span-1 mb-5">
+                            <label for="phone" class="mb-4 block uppercase tracking-wider font-bold text-md">Enter
+                                Phone</label>
+                            <input placeholder="Enter phone here" type="text" name="phone" id="phone"
+                                class="w-full outline-none p-2 border border-gray-400 rounded-md" />
+                        </div>
+                        <div class="col-span-1">
+                            <label for="amount" class="mb-4 block uppercase tracking-wider font-bold text-md">Enter
+                                amount</label>
+                            <input placeholder="Enter amount here" type="text" name="amount" id="amount"
+                                class="w-full outline-none p-2 border border-gray-400 rounded-md" />
+                        </div>
+                        <div class="col-span-2">
+                            <label for="productinfo" class="mb-4 block uppercase tracking-wider font-bold text-md">Enter
+                                Product Info</label>
+                            <input placeholder="Enter productinfo here" type="text" name="productinfo" id="productinfo"
+                                class="w-full outline-none p-2 border border-gray-400 rounded-md" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount" class="mb-0 block uppercase tracking-wider font-bold text-md">&nbsp;</label>
+                        <button type="submit"
+                            class="bg-blue-800 w-full text-bold text-md tacking-wider uppercase px-5 text-white py-2 rounded-md">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+    <script
+        src="https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/v2.0.0/easebuzz-checkout-v2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#paymentform').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    firstname: $('#name').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val(),
+                    amount: $('#amount').val(),
+                    productinfo: $('#productinfo').val()
+                };
+
+                $.ajax({
+                    url: 'http://localhost:3000/payment',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        const acckey = response.data;
+                        var easebuzzCheckout = new EasebuzzCheckout('key', 'prod');
+                        const amount = $("#amount").val();
+                        var options = {
+                            access_key: acckey,
+                            onResponse: (response) => {
+                                console.log(response);
+                            },
+                            theme: "#123456"
+                        }
+                        easebuzzCheckout.initiatePayment(options);
+                    },
+                    error: function (error) {
+                        // Handle any errors
+                        alert('An error occurred. Please try again.');
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -24,16 +24,11 @@
                         </div>
                         <div class="col-md-2">
                             <div id="idv">
-                                <button
-                                    class="btn btn-primary"
-                                >
+                                <button class="btn btn-primary">
                                     Notifications
-                                    <span
-                                        class="badge bg-primary"
-                                        >12</span
-                                    >
+                                    <span class="badge bg-primary">12</span>
                                 </button>
-                                
+
                             </div>
                         </div>
                         <div class="col-span-1 mb-5">
@@ -89,7 +84,7 @@
                 };
 
                 $.ajax({
-                    url: 'http://localhost:3000/payment',
+                    url: '/payment',
                     type: 'POST',
                     data: formData,
                     success: function (response) {
